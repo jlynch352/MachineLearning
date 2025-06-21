@@ -21,11 +21,16 @@ class LinearRegression:
         if self.parameters.size == 0:
             print("You haven't trained the model yet")
             return np.array([])
+        
+        X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
 
-        return X @ self.parameters
+        return X1 @ self.parameters
 
     def OrdinaryLeastSquaresMethod(self, X: np.ndarray, Y: np.ndarray) -> np.ndarray:
-        res = np.linalg.inv(X.T @ X) @ X.T @ Y
+
+        X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
+
+        res = np.linalg.inv(X1.T @ X1) @ X1.T @ Y
         
         self.parameters = res
 
@@ -33,11 +38,13 @@ class LinearRegression:
     
     def StochasticGradientDescent(self, X:np.ndarray,Y:np.ndarray, LearningRate: float, Epochs: int) -> np.ndarray:
         
+        X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
+
         if self.parameters.size == 0:
-            self.parameters = np.random.randn(X.shape[1])
+            self.parameters = np.random.randn(X1.shape[1])
 
         for i in range(Epochs):
-            for x,y in zip(X,Y):
+            for x,y in zip(X1,Y):
                 prediction = x @ self.parameters
                 graident = (prediction - y) * x
                 self.parameters = self.parameters - (LearningRate * graident)
@@ -46,31 +53,36 @@ class LinearRegression:
     
     def BatchGradientDescent(self, X: np.ndarray, Y: np.ndarray, LearningRate: float, Epochs: int) -> np.ndarray:
         
+        X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
+
         if self.parameters.size == 0:
-            self.parameters = np.random.randn(X.shape[1])
+            self.parameters = np.random.randn(X1.shape[1])
     
         for _ in range(Epochs):
             gradient = np.zeros_like(self.parameters)  
 
-            for x, y in zip(X, Y):
+            for x, y in zip(X1, Y):
                 prediction = x @ self.parameters
                 gradient += (prediction - y) * x
 
-            gradient /= X.shape[0]
+            gradient /= X1.shape[0]
             self.parameters -= LearningRate * gradient
 
         return self.parameters
 
     def StochasticBatchGradientDescent(self, X: np.ndarray, Y: np.ndarray, LearningRate: float, Epochs: int, batchSize: int) -> np.ndarray:
-        if self.parameters.size == 0:
-            self.parameters = np.random.randn(X.shape[1])
         
-        n = X.shape[0]
+        X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
+
+        if self.parameters.size == 0:
+            self.parameters = np.random.randn(X1.shape[1])
+        
+        n = X1.shape[0]
 
         for _ in range(Epochs):
             index = np.random.randint(0, n - batchSize + 1)
 
-            X_batch = X[index:index + batchSize]
+            X_batch = X1[index:index + batchSize]
             Y_batch = Y[index:index + batchSize]
             
             gradient = np.zeros_like(self.parameters)
@@ -85,6 +97,8 @@ class LinearRegression:
         return self.parameters
             
     def LocallyWeightedRegression(self,X, Y, x1, tau) -> np.ndarray:
+
+
         #matrix of difference of between the data points and the target point
         difference = X - x1
 

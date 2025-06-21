@@ -8,7 +8,7 @@ from typing import Tuple
 
 class PerformanceCalculator:
     
-    def __init__(self, y_true, y_pred):
+    def __init__(self, y_true: np.ndarray, y_pred: np.ndarray):
         self.y_true = y_true
         self.y_pred = y_pred
 

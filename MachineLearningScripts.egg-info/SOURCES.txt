@@ -1,0 +1,9 @@
+setup.py
+MachineLearningScripts.egg-info/PKG-INFO
+MachineLearningScripts.egg-info/SOURCES.txt
+MachineLearningScripts.egg-info/dependency_links.txt
+MachineLearningScripts.egg-info/requires.txt
+MachineLearningScripts.egg-info/top_level.txt
+test/LinearRegressionTest.py
+test/LogisticRegressionTest.py
+test/__init__.py

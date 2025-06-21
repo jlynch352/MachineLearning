@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: MachineLearningScripts
+Version: 0.1.0
+Summary: From‐scratch ML algorithms (LinearReg, LogisticReg, Perceptron, …)
+Author: James Lynch
+Requires-Python: >=3.8
+Requires-Dist: numpy>=1.20
