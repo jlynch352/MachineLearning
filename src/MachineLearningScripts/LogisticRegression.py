@@ -1,5 +1,13 @@
 import numpy as np
 
+''' 
+Logistic Regression From Scrath
+
+File Contiains
+1. Prediction
+2. Stochastic Gradient Descent
+5. Newtons Method
+'''
 
 class LogisticRegression:
     def __init__(self, threshold: float = 0.5):
@@ -14,7 +22,7 @@ class LogisticRegression:
         s = self.sigmoid(x)
         return s*(1-s)
     
-    def PredictionProbability(self, X) -> np.ndarray:
+    def PredictionProbability(self, X: np.ndarray) -> np.ndarray:
         if self.parameters.size == 0:
             print("You haven't trained the model yet")
             return np.array([])
@@ -23,12 +31,12 @@ class LogisticRegression:
 
         return self.sigmoid(X1 @ self.parameters)
     
-    def PredictionClass(self,X) -> np.ndarray:
+    def PredictionClass(self,X: np.ndarray) -> np.ndarray:
 
         probs = self.PredictionProbability(X)
         return (probs >= self.threshold).astype(int)
     
-    def StochasticGraidentDescent(self, X, Y, LearningRate: float, Epochs: int) -> np.ndarray:
+    def StochasticGraidentDescent(self, X: np.ndarray, Y: np.ndarray, LearningRate: float, Epochs: int) -> np.ndarray:
 
         X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
 
@@ -43,7 +51,7 @@ class LogisticRegression:
 
         return self.parameters
 
-    def NewtonsMethod(self, X: np.ndarray, Y: np.ndarray, Delta: float, ridge: float = 1e-4, MaxIterations = 10) -> np.ndarray:
+    def NewtonsMethod(self, X: np.ndarray, Y: np.ndarray, Delta: float, ridge: float = 1e-4, MaxIterations: int = 10) -> np.ndarray:
 
         X1 = np.column_stack([np.ones((X.shape[0], 1)), X])
 
@@ -52,26 +60,30 @@ class LogisticRegression:
 
         for _ in range(MaxIterations):
 
-        # 1) scores and probabilities
+            #Find predicted probability
             z = X1 @ self.parameters
             probs = self.sigmoid(z)
 
-        # 2) gradient of negative log-likelihood
+            # calculate the graident 
             gradient = X1.T @ (probs - Y)
 
-        # 3) diagonal weight matrix
+            # calculate W for calculating the Hessian
             W = np.diag(probs * (1 - probs))  
 
-        # 4) Hessian and Newton step
+            # calculate the hessian
             H = X1.T @ W @ X1
-            #add a ridge to ensure invertiblity
+
+            #add ridge to stop non invertible matrix
             H += ridge * np.eye(H.shape[0])
 
+            # do Graident / Hesian but do via solving the equation
             step = np.linalg.solve(H, gradient)
-        
-            self.parameters -= step
 
-            #condition for accuracy
+            #update the paramters
+
+            self.parameters -=  step
+
+            # once accurate enough end
             if np.linalg.norm(step) < Delta:
                 return self.parameters
 
